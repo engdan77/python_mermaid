@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Annotated
 from .node import Node
 from .link import Link
 from .interaction import Interaction
@@ -26,8 +26,12 @@ class MermaidDiagram:
         links: List[Link] = [],
         interactions: List[Interaction] = [],
         type="default",
-        orientation="default"
+        orientation="default",
+            style_class_definitions=None 
     ):
+        if style_class_definitions is None:
+            style_class_definitions = {}
+        self.style_class_definitions = style_class_definitions
         self.title = title
         self.nodes = nodes
         self.links = links
@@ -43,6 +47,10 @@ class MermaidDiagram:
 
     def __str__(self):
         self.string = f"---\ntitle: {self.title}\n---\n"
+        if self.style_class_definitions:
+            style_class_string = '\n'.join([f'classDef {k} {v}' for k, v in self.style_class_definitions.items()]) + '\n'
+        else:
+            style_class_string = ''
         nodes_string = (
             '\n'.join([str(node) for node in self.nodes])
         )
@@ -57,6 +65,7 @@ class MermaidDiagram:
                 None,
                 [
                     f"{self.type} {self.orientation}",
+                    style_class_string,
                     nodes_string,
                     links_string,
                     interactions_string

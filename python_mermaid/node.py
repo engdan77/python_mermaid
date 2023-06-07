@@ -36,7 +36,9 @@ class Node:
         content: str = "",
         shape: str = "normal",
         sub_nodes: List = [],
+        style_class: str = "",
     ):
+        self.style_class = style_class
         self.id = snake_case(id)
         self.content = content if content else id
         self.shape = NODE_SHAPES[shape]
@@ -65,4 +67,6 @@ class Node:
                 '"' + self.content + '"',
                 self.shape.end
             ])
+            if self.style_class:
+                s += f':::{self.style_class}'
         return s
